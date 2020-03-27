@@ -8,10 +8,10 @@ set(0, 'DefaultAxesFontSize', 16);
 i=1;
 j=1;
 n=1;
-files=dir('/Users/edson/Documents/MATLAB/Sensor de adubo/Analise Dados/*');
+files=dir('/Users/edson/Documents/MATLAB/Sensor_MATLAB/Analise Dados/*');
 dirFlags = [files.isdir] & ~strcmp({files.name},'.') & ~strcmp({files.name},'..');
 pastas=files(dirFlags);
-cd('/Users/edson/Documents/MATLAB/Sensor de adubo/Analise Dados/');
+cd('/Users/edson/Documents/MATLAB/Sensor_MATLAB/Analise Dados/');
 delete 'Dataset_Full.CSV'
 for i=1:8
         nome_da_pasta = pastas(i).name;
