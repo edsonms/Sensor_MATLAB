@@ -21,55 +21,57 @@ for i=1:8
         for j=1:5
             cd(nome_da_pasta);     
             x_2048=csvread (d(j).name,0,1);
-            x=x_2048;
-            [L,R] = size(x);
-            Fs=4096; %Defined in the mbed code
-            %f = Fs*(0:(L/2))/L;
-            %f=f(2:(L/2)+1)';
-            pw_DC = rms(x)^2;
-            x = x - mean(x);
-            pw_AC = rms(x)^2;
-            %s = spectrogram(x);
-            %spectrogram(x,[],[],[],Fs,'yaxis');
-            zcd = dsp.ZeroCrossingDetector;
-            zcdOut = step(zcd,x);
-            x_normalized = x/max(abs(x));
-            kt=kurtosis(x);
-            e = entropy(x_normalized);
-            variance=var(x);
-            mediana=median(x);
-            desvio=std(x);
-            
-%             pd=makedist('Normal','mu',mean(x),'sigma',desvio);
-%             pdf_x=pdf(pd,x);
-%             pdf_entropy=entropy(pdf_x);
-%             pdf_variance=var(pdf_x);
-%             pdf_kurtosis=kurtosis(pdf_x);
-%             pdf_skewness=skewness(pdf_x);
-            
-            y=fft(x,L);
-            %y=y(2:(L/2)+1);
-            %y_abs=abs(y);
-            %y_dB=20*log10(y_abs);
-            %plot(f,y_dB);
-            xdft = y;
-            xdft = xdft(2:L/2+1);
-            psdx = (1/(Fs*L)) * abs(xdft).^2;
-            psdx(2:end-1) = 2*psdx(2:end-1);
-            psd_mediana=median(psdx);
-            psd_kurtosis=kurtosis(psdx);
-            psd_skewness=skewness(psdx);
-            psd_desvio=std(psdx);
-            P2 = 20*log10(abs(y/L));
-            P1 = P2(2:L/2+1);
-            P1 = 2*P1(1:end-1);
-            f = Fs*(1:(L/2-1))/L;
-            [M,I]= max(P1);
-            beat_frequency=f(I);
             cd ..;
-            matriz=[pw_AC zcdOut beat_frequency desvio psd_desvio];
-            dlmwrite('Dataset_Full.CSV',matriz,'-append');
-            n = n+1;    
+            k=1;
+            for k=1:256:2048
+                x=x_2048(k:k+255);
+                [L,R] = size(x);
+                Fs=4096; %Defined in the mbed code
+                %f = Fs*(0:(L/2))/L;
+                %f=f(2:(L/2)+1)';
+                pw_DC = rms(x)^2;
+                x = x - mean(x);
+                pw_AC = rms(x)^2;
+                %s = spectrogram(x);
+                %spectrogram(x,[],[],[],Fs,'yaxis');
+                zcd = dsp.ZeroCrossingDetector;
+                zcdOut = step(zcd,x);
+                x_normalized = x/max(abs(x));
+                kt=kurtosis(x);
+                e = entropy(x_normalized);
+                variance=var(x);
+                mediana=median(x);
+                desvio=std(x);
+
+    %             pd=makedist('Normal','mu',mean(x),'sigma',desvio);
+    %             pdf_x=pdf(pd,x);
+    %             pdf_entropy=entropy(pdf_x);
+    %             pdf_variance=var(pdf_x);
+    %             pdf_kurtosis=kurtosis(pdf_x);
+    %             pdf_skewness=skewness(pdf_x);
+
+                y=fft(x,L);
+                %y=y(2:(L/2)+1);
+                %y_abs=abs(y);
+                %y_dB=20*log10(y_abs);
+                %plot(f,y_dB);
+                xdft = y;
+                xdft = xdft(2:L/2+1);
+                psdx = (1/(Fs*L)) * abs(xdft).^2;
+                psdx(2:end-1) = 2*psdx(2:end-1);
+                psd_mediana=median(psdx);
+                psd_kurtosis=kurtosis(psdx);
+                psd_skewness=skewness(psdx);
+                psd_desvio=std(psdx);
+                P2 = 20*log10(abs(y/L));
+                P1 = P2(2:L/2+1);
+                P1 = 2*P1(1:end-1);
+                f = Fs*(1:(L/2-1))/L;
+                [M,I]= max(P1);
+                beat_frequency=f(I);
+                matriz=[pw_AC zcdOut beat_frequency desvio psd_desvio];
+                dlmwrite('Dataset_Full.CSV',matriz,'-append');
+            end
         end 
 end
          
