@@ -32,6 +32,7 @@ for i=1:8
                 pw_DC = rms(x)^2;
                 x = x - mean(x);
                 pw_AC = rms(x)^2;
+                pw_AC = pw_AC/79938000;
                 %s = spectrogram(x);
                 %spectrogram(x,[],[],[],Fs,'yaxis');
                 zcd = dsp.ZeroCrossingDetector;
@@ -69,7 +70,12 @@ for i=1:8
                 f = Fs*(1:(L/2-1))/L;
                 [M,I]= max(P1);
                 beat_frequency=f(I);
-                matriz=[pw_AC zcdOut beat_frequency desvio psd_desvio];
+                zcdOut=zcdOut/108;
+                beat_frequency=beat_frequency/144;
+                desvio = desvio/8958;
+                psd_desvio=psd_desvio/299050;
+                frequencia_esperada=str2num(nome_da_pasta)/100;
+                matriz=[pw_AC zcdOut beat_frequency desvio psd_desvio frequencia_esperada];
                 dlmwrite('Dataset_Full.CSV',matriz,'-append');
             end
         end 
