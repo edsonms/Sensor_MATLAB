@@ -36,7 +36,8 @@ for i=1:8
                 %s = spectrogram(x);
                 %spectrogram(x,[],[],[],Fs,'yaxis');
                 zcd = dsp.ZeroCrossingDetector;
-                zcdOut = step(zcd,x);
+                zcdOut_int = step(zcd,x);
+                zcdOut = cast(zcdOut_int,'double');
                 x_normalized = x/max(abs(x));
                 kt=kurtosis(x);
                 e = entropy(x_normalized);
@@ -76,7 +77,7 @@ for i=1:8
                 psd_desvio=psd_desvio/299050;
                 frequencia_esperada=str2num(nome_da_pasta)/100;
                 matriz=[pw_AC zcdOut beat_frequency desvio psd_desvio frequencia_esperada];
-                dlmwrite('Dataset_Full.CSV',matriz,'-append');
+                dlmwrite('Dataset_Full.CSV',matriz,'precision',3,'-append');
             end
         end 
 end
